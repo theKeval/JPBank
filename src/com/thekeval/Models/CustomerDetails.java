@@ -62,4 +62,14 @@ public class CustomerDetails {
         this.accounts = _accounts;
     }
 
+    @Override
+    public String toString() {
+        return "CustomerDetails{" +
+                "name='" + name + '\'' +
+                ", contactNo='" + contactNo + '\'' +
+                ", address='" + address + '\'' +
+                ", password='" + password + '\'' +
+                ", accounts=" + accounts +
+                '}';
+    }
 }

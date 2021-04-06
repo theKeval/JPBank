@@ -30,4 +30,14 @@ public class SalaryAccount extends BankAccount {
 
     // endregion
 
+
+    @Override
+    public String toString() {
+        return "SalaryAccount{" +
+                "accountNo='" + accountNo + '\'' +
+                ", accountBalance=" + accountBalance +
+                ", employer='" + employer + '\'' +
+                ", monthlySalary=" + monthlySalary +
+                '}';
+    }
 }

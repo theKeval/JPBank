@@ -38,4 +38,12 @@ public class CustomerAccounts {
 
     // endregion
 
+    @Override
+    public String toString() {
+        return "CustomerAccounts{" +
+                "savingAcc=" + savingAcc +
+                ", salaryAcc=" + salaryAcc +
+                ", fdAcc=" + fdAcc +
+                '}';
+    }
 }

@@ -1,8 +1,8 @@
 package com.thekeval.Models;
 
 public class BankAccount {
-    private String accountNo;
-    private double accountBalance;
+    protected String accountNo;
+    protected double accountBalance;
 
     public BankAccount(String accountNo, double accountBalance) {
         this.accountNo = accountNo;
@@ -38,4 +38,11 @@ public class BankAccount {
         return accountBalance;
     }
 
+    @Override
+    public String toString() {
+        return "BankAccount{" +
+                "accountNo='" + accountNo + '\'' +
+                ", accountBalance=" + accountBalance +
+                '}';
+    }
 }

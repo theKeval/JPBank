@@ -30,4 +30,14 @@ public class SavingAccount extends BankAccount {
 
     // endregion
 
+    @Override
+    public String toString() {
+        return "SavingAccount{" +
+                "accountNo='" + accountNo + '\'' +
+                ", accountBalance=" + accountBalance +
+                ", minBalance=" + minBalance +
+                ", interestRate=" + interestRate +
+                '}';
+    }
+
 }

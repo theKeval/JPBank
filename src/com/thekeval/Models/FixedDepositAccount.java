@@ -29,4 +29,14 @@ public class FixedDepositAccount extends BankAccount {
 
     // endregion
 
+
+    @Override
+    public String toString() {
+        return "FixedDepositAccount{" +
+                "accountNo='" + accountNo + '\'' +
+                ", accountBalance=" + accountBalance +
+                ", termDuration=" + termDuration +
+                ", interestRate=" + interestRate +
+                '}';
+    }
 }

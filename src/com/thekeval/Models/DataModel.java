@@ -20,4 +20,10 @@ public class DataModel {
 
     // endregion
 
+    @Override
+    public String toString() {
+        return "DataModel{" +
+                "customers=" + customers +
+                '}';
+    }
 }
