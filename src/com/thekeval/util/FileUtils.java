@@ -8,7 +8,10 @@ import java.io.*;
 
 public class FileUtils {
 
-
+    public static FileUtils objFileUtils = null;
+    public FileUtils() {
+        objFileUtils = new FileUtils();
+    }
 
     public String getJsonString(DataModel data) {
         Gson gson = new Gson();
@@ -23,15 +26,15 @@ public class FileUtils {
             pw.println(jsonString);
             pw.close();
 
-            Log.print("data saved");
+            print("data saved");
 
         } catch (Exception ex) {
-            Log.print("error in saving data:");
+            print("error in saving data:");
             ex.printStackTrace();
         }
     }
 
-    public static DataModel getData() {
+    public DataModel getData() {
         DataModel data = null;
 
         try {
@@ -42,17 +45,21 @@ public class FileUtils {
             Gson g = new Gson();
             data = g.fromJson(dataString, DataModel.class);
 
-            Log.print(data.toString());
+            print(data.toString());
 
         } catch (FileNotFoundException fileNotFoundEx) {
-            Log.print("File not found");
+            print("File not found");
         }
         catch (Exception ex) {
-            Log.print("error reading data from file.");
+            print("error reading data from file.");
             ex.printStackTrace();
         }
 
         return data;
+    }
+
+    public void print(String str) {
+        System.out.println(str);
     }
 
 }
