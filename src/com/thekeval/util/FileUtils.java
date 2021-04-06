@@ -10,7 +10,9 @@ public class FileUtils {
 
     public static FileUtils objFileUtils = null;
     public FileUtils() {
-        objFileUtils = new FileUtils();
+        if (objFileUtils == null) {
+            objFileUtils = new FileUtils();
+        }
     }
 
     public String getJsonString(DataModel data) {
