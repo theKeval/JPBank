@@ -264,6 +264,10 @@ public class Helpers {
                     break;
 
                 case 4: // transfer money to other bank account
+                    transferMoney(loggedInCustomer.getAccounts());
+
+                    FileUtils.getInstance().updateData();
+                    userChoice = -1;
                     break;
 
                 case 5: // pay electricity bills
@@ -452,6 +456,162 @@ public class Helpers {
 
     }
 
+    // region transfer money related methods
+
+    private void transferMoney(CustomerAccounts accounts) {
+        if (accounts == null)
+            return;
+
+        SavingAccount savAcc = null;
+        SalaryAccount salAcc = null;
+        FixedDepositAccount fdAcc = null;
+
+        String str = "From which account would you like to transfer?\n";
+        if (accounts.getSavingAcc() != null) {
+            str += "1 - Savings Account\n";
+            savAcc = accounts.getSavingAcc();
+        }
+
+        if (accounts.getSalaryAcc() != null) {
+            str += "2 - Salary Account\n";
+            salAcc = accounts.getSalaryAcc();
+        }
+
+        if (accounts.getFdAcc() != null) {
+            str += "3 - Fixed Deposit Account\n";
+            fdAcc = accounts.getFdAcc();
+        }
+
+        str += "press 0 to go back to previous menu";
+
+        int userChoice = -1;
+        do {
+            print(str);
+            userChoice = getInt();
+
+            switch (userChoice) {
+                case 0: // go back to previous menu
+                    break;
+
+                case 1: // saving account
+                    if (savAcc != null) {
+                        print("You have " + String.format("%.2f", savAcc.getAccountBalance()) + " amount in your Saving account.\nHow much money would you like to transfer?");
+                        double money = getDouble();
+
+                        if (money < savAcc.getAccountBalance()) {
+                            addToBeneficiary(money);
+                            double amount = savAcc.deductBalance(money);
+                            print("New balance in " + loggedInCustomer.getName() + "'s saving account is " + amount);
+                            print("Transfer Successful !");
+                        }
+
+                    }
+                    break;
+
+                case 2: // salary account
+                    if (salAcc != null) {
+                        print("You have " + String.format("%.2f", salAcc.getAccountBalance()) + " amount in your Salary account.\nHow much money would you like to transfer?");
+                        double money = getDouble();
+
+                        if (money < salAcc.getAccountBalance()) {
+                            addToBeneficiary(money);
+                            double amount = salAcc.deductBalance(money);
+                            print("New balance in " + loggedInCustomer.getName() + "'s salary account is " + amount);
+                            print("Transfer Successful !");
+                        }
+
+                    }
+                    break;
+
+                case 3: // fd account
+                    if (fdAcc != null) {
+                        print("You have " + String.format("%.2f", fdAcc.getAccountBalance()) + " amount in your Fixed deposit account.\nHow much money would you like to transfer?");
+                        double money = getDouble();
+
+                        if (money < fdAcc.getAccountBalance()) {
+                            addToBeneficiary(money);
+                            double amount = fdAcc.deductBalance(money);
+                            print("New balance in " + loggedInCustomer.getName() + "'s fixed deposit account is " + amount);
+                            print("Transfer Successful !");
+                        }
+
+                    }
+                    break;
+
+                default:
+                    print("Invalid input. please try again.");
+                    userChoice = -1;
+                    break;
+            }
+
+        } while (userChoice == -1);
+
+    }
+
+    public void addToBeneficiary(double money) {
+
+        print("Enter the account number in which you would like to transfer money.");
+        print("Available account numbers are: " + getAvailableAccountNumbers());
+        String accToTransfer = getString();
+
+        for (CustomerDetails item : customers.getCustomers()) {
+
+            if (item.getAccounts().getSavingAcc() != null) {
+                if (item.getAccounts().getSavingAcc().getAccountNo().equalsIgnoreCase(accToTransfer)) {
+                    double amount = item.getAccounts().getSavingAcc().addBalance(money);
+                    print("New balance in " + item.getName() + "'s saving account is: " + amount);
+                    break;
+                }
+            }
+
+            if (item.getAccounts().getSalaryAcc() != null) {
+                if (item.getAccounts().getSalaryAcc().getAccountNo().equalsIgnoreCase(accToTransfer)) {
+                    double amount = item.getAccounts().getSalaryAcc().addBalance(money);
+                    print("New balance in " + item.getName() + "'s saving account is: " + amount);
+                    break;
+                }
+            }
+
+            if (item.getAccounts().getFdAcc() != null) {
+                if (item.getAccounts().getFdAcc().getAccountNo().equalsIgnoreCase(accToTransfer)) {
+                    double amount = item.getAccounts().getFdAcc().addBalance(money);
+                    print("New balance in " + item.getName() + "'s saving account is: " + amount);
+                    break;
+                }
+            }
+
+        }
+
+    }
+
+    public ArrayList<String> getAvailableAccountNumbers() {
+        ArrayList<String> accNos = new ArrayList<>();
+
+        if (customers != null) {
+
+            for (CustomerDetails cust : customers.getCustomers()) {
+                if (cust.getAccounts().getSavingAcc() != null) {
+                    accNos.add(cust.getAccounts().getSavingAcc().getAccountNo());
+                }
+
+                if (cust.getAccounts().getSalaryAcc() != null) {
+                    accNos.add(cust.getAccounts().getSalaryAcc().getAccountNo());
+                }
+
+                if (cust.getAccounts().getFdAcc() != null) {
+                    accNos.add(cust.getAccounts().getFdAcc().getAccountNo());
+                }
+
+            }
+
+        }
+
+        return accNos;
+    }
+
+    // endregion
+
+    
 
     // endregion
 
