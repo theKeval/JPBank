@@ -1,0 +1,1 @@
+{"customers":[{"name":"Keval","contactNo":"7021989791","address":"Bhavnagar","password":"abc","accounts":{"savingAcc":{"minBalance":100.0,"interestRate":6.0,"accountNo":"001","accountBalance":12000.99},"salaryAcc":{"employer":"Microsoft","monthlySalary":10000.0,"accountNo":"002","accountBalance":8977.5}}}]}
