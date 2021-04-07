@@ -745,12 +745,16 @@ public class Helpers {
                         cust.setName(name);
                     }
 
+                    break;
+
                 case 2: // change contact no
                     print("Please enter new contact number: ");
                     String contactNo = getString();
                     if (!contactNo.isEmpty()) {
                         cust.setContactNo(contactNo);
                     }
+
+                    break;
 
                 case 3: // change address/city
                     print("Please enter new address/city: ");
@@ -759,6 +763,8 @@ public class Helpers {
                         cust.setAddress(addressCity);
                     }
 
+                    break;
+
                 case 4: // change password
                     print("Please enter new password: ");
                     String pass = getString();
@@ -766,9 +772,13 @@ public class Helpers {
                         cust.setPassword(pass);
                     }
 
+                    break;
+
                 default:
                     print("Invalid input. Please enter valid number again.");
                     userChoice = -1;
+
+                    break;
 
             }
 
