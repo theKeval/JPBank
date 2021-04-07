@@ -74,17 +74,17 @@ public class Helpers {
             print("Which account would you like to open?\n1 - Saving account\n2 - Salary account\n3 - Fixed Deposit account");
             int choice = getInt();
             switch (choice) {
-                case 1:
+                case 1: // Saving account
                     SavingAccount savingAcc = createSavingAccount();
                     accounts.setSavingAcc(savingAcc);
                     break;
 
-                case 2:
+                case 2: // salary account
                     SalaryAccount salaryAcc = createSalaryAccount();
                     accounts.setSalaryAcc(salaryAcc);
                     break;
 
-                case 3:
+                case 3: // fixed deposit account
                     FixedDepositAccount fdAcc = createFdAccount();
                     accounts.setFdAcc(fdAcc);
                     break;
@@ -285,9 +285,18 @@ public class Helpers {
                     break;
 
                 case 7: // add new bank account
+                    CustomerAccounts accounts = loggedInCustomer.getAccounts();
+                    loggedInCustomer.addBankAccount(letAddBankAccounts(accounts));
+
+                    FileUtils.getInstance().updateData();
+                    userChoice = -1;
                     break;
 
                 case 8: // show or change customer details
+                    loggedInCustomer = showOrEditCustDetails(loggedInCustomer);
+
+                    FileUtils.getInstance().updateData();
+                    userChoice = -1;
                     break;
 
                 default:
@@ -295,6 +304,8 @@ public class Helpers {
                     userChoice = -1;
                     break;
             }
+
+            print("\n");     // just adding a line break to pretify the command line
 
         } while (userChoice == -1);
     }
@@ -510,7 +521,7 @@ public class Helpers {
                         if (money < savAcc.getAccountBalance()) {
                             addToBeneficiary(money);
                             double amount = savAcc.deductBalance(money);
-                            print("New balance in " + loggedInCustomer.getName() + "'s saving account is " + amount);
+                            print("New balance in " + loggedInCustomer.getName() + "'s saving account is " + String.format("%.2f", amount));
                             print("Transfer Successful !");
                         }
 
@@ -568,7 +579,7 @@ public class Helpers {
             if (item.getAccounts().getSavingAcc() != null) {
                 if (item.getAccounts().getSavingAcc().getAccountNo().equalsIgnoreCase(accToTransfer)) {
                     double amount = item.getAccounts().getSavingAcc().addBalance(money);
-                    print("New balance in " + item.getName() + "'s saving account is: " + amount);
+                    print("New balance in " + item.getName() + "'s saving account is: " + String.format("%.2f", amount));
                     break;
                 }
             }
@@ -576,7 +587,7 @@ public class Helpers {
             if (item.getAccounts().getSalaryAcc() != null) {
                 if (item.getAccounts().getSalaryAcc().getAccountNo().equalsIgnoreCase(accToTransfer)) {
                     double amount = item.getAccounts().getSalaryAcc().addBalance(money);
-                    print("New balance in " + item.getName() + "'s saving account is: " + amount);
+                    print("New balance in " + item.getName() + "'s salary account is: " + String.format("%.2f", amount));
                     break;
                 }
             }
@@ -584,7 +595,7 @@ public class Helpers {
             if (item.getAccounts().getFdAcc() != null) {
                 if (item.getAccounts().getFdAcc().getAccountNo().equalsIgnoreCase(accToTransfer)) {
                     double amount = item.getAccounts().getFdAcc().addBalance(money);
-                    print("New balance in " + item.getName() + "'s saving account is: " + amount);
+                    print("New balance in " + item.getName() + "'s fixed deposit account is: " + String.format("%.2f", amount));
                     break;
                 }
             }
@@ -643,18 +654,18 @@ public class Helpers {
         }
 
         if (accounts.getSalaryAcc() != null) {
-            str += "1 - Salary Account\n";
+            str += "2 - Salary Account\n";
             salAcc = accounts.getSalaryAcc();
         }
 
         if (accounts.getFdAcc() != null) {
-            str += "1 - Fixed Deposit Account\n";
+            str += "3 - Fixed Deposit Account\n";
             fdAcc = accounts.getFdAcc();
         }
 
         str += "press 0 to go back to previous menu";
 
-        int userChoice = -1;
+        int userChoice;
         do {
             print(str);
             userChoice = getInt();
@@ -668,15 +679,21 @@ public class Helpers {
                         processUtilityPayment(utilityType, "Saving account", savAcc);
                     }
 
+                    break;
+
                 case 2: // salary account
                     if (salAcc != null) {
                         processUtilityPayment(utilityType, "Salary account", salAcc);
                     }
 
+                    break;
+
                 case 3: // FD account
                     if (fdAcc != null) {
                         processUtilityPayment(utilityType, "Fixed Deposit account",fdAcc);
                     }
+
+                    break;
 
                 default:
                     print("Invalid input. please try again");
@@ -709,7 +726,56 @@ public class Helpers {
 
     // endregion
 
-    
+    public CustomerDetails showOrEditCustDetails(CustomerDetails cust) {
+
+        print("Below are the customer details. Enter the number associated with the detail, to change that detail.");
+        print("1 - Customer name: " + cust.getName() + "\n2 - Customer contact number: " + cust.getContactNo() + "\n3 - Customer address/city: " + cust.getAddress() + "\n4 - Customer password: " + cust.getPassword() + "\n0 - Go back to previous menu");
+
+        int userChoice = -1;
+        do {
+            userChoice = getInt();
+            switch (userChoice) {
+                case 0: // go back go previous menu
+                    break;
+
+                case 1: // change customer name
+                    print("Please enter new name: ");
+                    String name = getString();
+                    if (!name.isEmpty()) {
+                        cust.setName(name);
+                    }
+
+                case 2: // change contact no
+                    print("Please enter new contact number: ");
+                    String contactNo = getString();
+                    if (!contactNo.isEmpty()) {
+                        cust.setContactNo(contactNo);
+                    }
+
+                case 3: // change address/city
+                    print("Please enter new address/city: ");
+                    String addressCity = getString();
+                    if (!addressCity.isEmpty()) {
+                        cust.setAddress(addressCity);
+                    }
+
+                case 4: // change password
+                    print("Please enter new password: ");
+                    String pass = getString();
+                    if (!pass.isEmpty()) {
+                        cust.setPassword(pass);
+                    }
+
+                default:
+                    print("Invalid input. Please enter valid number again.");
+                    userChoice = -1;
+
+            }
+
+        } while(userChoice == -1);
+
+        return cust;
+    }
 
     // endregion
 
