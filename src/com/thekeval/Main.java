@@ -21,29 +21,30 @@ public class Main {
 
         if (data == null) {
             // first time program run - no saved data
-            print("\nWelcome to Swift Bank. Please register yourself to get started");
+            print(firstTimeWelcomeMessage);
             ArrayList<CustomerDetails> users = Helpers.getInstance().registerMultipleUsers();
 
-            DataModel _data = new DataModel(users);
-            String dataJson = FileUtils.getInstance().getJsonString(_data);
+            customers = new DataModel(users);
+            String dataJson = FileUtils.getInstance().getJsonString(customers);
             FileUtils.getInstance().saveData(dataJson);
         } else {
             // use saved data from 'data' variable
+            customers = data;
         }
 
-        print("\nWelcome to JP Bank. What would you like to do today?");
+        print(welcomeMessage);
 
         int userChoice = -1;
         do {
-            print("1 - Register new user\n2 - Login existing user\n9 - Show saved data\n0 - Exit\nNote: To perform transactions, you need to login");
+            print(mainMenu);
             userChoice = Helpers.getInstance().getInt();
 
             switch (userChoice) {
-                case 0:
-                    print("Thank you for using Swift Bank. See you next time! Bye..");
+                case 0: // exit
+                    print(exitMessage);
                     break;
 
-                case 1:
+                case 1: // register users
 
                     ArrayList<CustomerDetails> users = Helpers.getInstance().registerMultipleUsers();
 
@@ -63,13 +64,29 @@ public class Main {
 
                 break;
 
-                case 2:
+                case 2: // login
+
+                    loggedInCustomer = Helpers.getInstance().customerLogin();
+
+                    // if user logged in successfully
+                    // then show them the Transaction menu
+                    if (loggedInCustomer != null) {
+                        Helpers.getInstance().showAndPerformTransactions();
+                    }
+
+                    // reset user choice to redirect to main menu
+                    userChoice = -1;
+
                     break;
 
-                case 9:
+                case 9: // show data
+                    Helpers.getInstance().printData();
+                    userChoice = -1;
                     break;
 
                 default:
+                    print("Please enter valid choice: ");
+                    userChoice = -1;
                     break;
             }
 

@@ -8,7 +8,7 @@ import java.io.*;
 
 public class FileUtils {
 
-    public static FileUtils objFileUtils = null;
+    private static FileUtils objFileUtils = null;
     public static FileUtils getInstance() {
         if (objFileUtils == null)
             objFileUtils = new FileUtils();
@@ -52,7 +52,7 @@ public class FileUtils {
             Gson g = new Gson();
             data = g.fromJson(dataString, DataModel.class);
 
-            print(data.toString());
+            // print(data.toString());
 
         } catch (FileNotFoundException fileNotFoundEx) {
             // print("File not found");

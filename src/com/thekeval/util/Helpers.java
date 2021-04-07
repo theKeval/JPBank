@@ -2,18 +2,23 @@ package com.thekeval.util;
 
 import com.thekeval.Models.*;
 
+import static com.thekeval.util.Constants.*;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Helpers {
 
-    public static Helpers objHelpers = null;
+    // variable declarations
+    private static Helpers objHelpers = null;
     public Scanner scan = new Scanner(System.in).useDelimiter("\n");
 
+    // constructor
     public Helpers() {
         // Initialize
     }
 
+    // method to get the singleton object of this 'Helpers' class
     public static Helpers getInstance() {
         if (objHelpers == null)
             objHelpers = new Helpers();
@@ -21,9 +26,8 @@ public class Helpers {
         return objHelpers;
     }
 
-    public void print(String str) {
-        System.out.println(str);
-    }
+
+    // region registration methods
 
     public ArrayList<CustomerDetails> registerMultipleUsers() {
         ArrayList<CustomerDetails> customers = new ArrayList<>();
@@ -32,14 +36,14 @@ public class Helpers {
         do {
             customers.add(registerUser());
             print("Would you like to register more user? y/n");
-            again = getString().equals("y");
+            again = getString().equalsIgnoreCase("y");
         }
         while (again);
 
         return customers;
     }
 
-    public CustomerDetails registerUser() {
+    private CustomerDetails registerUser() {
         print("Enter your name:");
         String name = getString();
         print("Set your password:");
@@ -55,6 +59,10 @@ public class Helpers {
         print("Registration successful!");
         return customer;
     }
+
+    // endregion
+
+    // region creating & adding bank accounts, generating account number
 
     public CustomerAccounts letAddBankAccounts(CustomerAccounts _accounts) {
         CustomerAccounts accounts = new CustomerAccounts(null, null, null);
@@ -88,7 +96,7 @@ public class Helpers {
 
             print("Would you like to add more bank account? y/n");
 
-        } while (getString().equals("y"));
+        } while (getString().equalsIgnoreCase("y"));
 
         return accounts;
     }
@@ -104,8 +112,7 @@ public class Helpers {
             accBalance = getDouble();
             if (accBalance > Constants.SAVING_MIN_BAL) {
                 repeat = false;
-            }
-            else {
+            } else {
                 print("Please enter amount more than " + Constants.SAVING_MIN_BAL);
                 repeat = true;
             }
@@ -145,9 +152,8 @@ public class Helpers {
         DataModel savedData = FileUtils.getInstance().getData();
         if (savedData == null) {
             accNo = Integer.parseInt(String.format("%03d", 1));
-        }
-        else {
-            for (CustomerDetails cust: savedData.getCustomers()) {
+        } else {
+            for (CustomerDetails cust : savedData.getCustomers()) {
 
                 if (cust.getAccounts() != null && cust.getAccounts().getSavingAcc() != null) {
                     SavingAccount _savingAcc = cust.getAccounts().getSavingAcc();
@@ -178,6 +184,76 @@ public class Helpers {
         return String.format("%03d", accNo);
     }
 
+    // endregion
+
+    // region Login related
+
+    public CustomerDetails customerLogin() {
+        CustomerDetails customer;
+        boolean again = false;
+        do {
+            customer = tryLogin();
+            if (customer != null) {
+                print("Welcome " + customer.getName());
+                again = false;
+            } else {
+                print("Incorrect name or password. Would you like to try again? y/n");
+                again = getString().equalsIgnoreCase("y");
+            }
+        }
+        while (again);
+
+        return customer;
+    }
+
+    private CustomerDetails tryLogin() {
+        CustomerDetails customer = null;
+
+        print("Enter your name:");
+        String name = getString();
+        print("Enter your password:");
+        String pass = getString();
+
+        for (var cust : Constants.customers.getCustomers()) {
+            if (cust.getName().equalsIgnoreCase(name) && cust.getPassword().equalsIgnoreCase(pass)) {
+                customer = cust;
+                break;
+            }
+        }
+
+        return customer;
+    }
+
+    // endregion
+
+    // region Transactions related
+
+    public void showAndPerformTransactions() {
+        int userChoice = -1;
+        do {
+            print(transactionMenu);
+            userChoice = getInt();
+
+        } while (userChoice == -1);
+    }
+
+    // endregion
+
+    // region Miscellaneous methods
+
+    public void printData() {
+        String dataString = FileUtils.getInstance().getJsonString(Constants.customers);
+        print("data as JSON: " + dataString);
+        print("data as toString: " + Constants.customers.toString());
+    }
+
+    public void print(String str) {
+        System.out.println(str);
+    }
+
+    // endregion
+
+
     // region Scanner Utils - getting user input from command line
 
     public String getString() {
@@ -192,8 +268,7 @@ public class Helpers {
             if (scan.hasNextInt()) {
                 input = scan.nextInt();
                 isValid = true;
-            }
-            else {
+            } else {
                 System.out.println("Error! Invalid number. Try again.");
             }
             scan.nextLine();
