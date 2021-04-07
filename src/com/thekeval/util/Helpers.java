@@ -271,9 +271,17 @@ public class Helpers {
                     break;
 
                 case 5: // pay electricity bills
+                    payUtilityBills(loggedInCustomer.getAccounts(), UtilityBills.electricityBill);
+
+                    FileUtils.getInstance().updateData();
+                    userChoice = -1;
                     break;
 
                 case 6: // pay credit card bills
+                    payUtilityBills(loggedInCustomer.getAccounts(), UtilityBills.creditCardBill);
+
+                    FileUtils.getInstance().updateData();
+                    userChoice = -1;
                     break;
 
                 case 7: // add new bank account
@@ -290,6 +298,7 @@ public class Helpers {
 
         } while (userChoice == -1);
     }
+
 
     private void displayBalance(CustomerAccounts accounts) {
         if (accounts != null) {
@@ -607,6 +616,95 @@ public class Helpers {
         }
 
         return accNos;
+    }
+
+    // endregion
+
+    // region Utility bill payment related
+
+    enum UtilityBills {
+        electricityBill,
+        creditCardBill
+    }
+
+    public void payUtilityBills(CustomerAccounts accounts, UtilityBills utilityType) {
+        if (accounts == null)
+            return;
+
+        SavingAccount savAcc = null;
+        SalaryAccount salAcc = null;
+        FixedDepositAccount fdAcc = null;
+
+        String str = "From which account would you like to pay your " + (utilityType.equals(UtilityBills.electricityBill) ? "Electricity Bill" : "Credit Card Bill") + "\n";
+
+        if (accounts.getSavingAcc() != null) {
+            str += "1 - Saving Account\n";
+            savAcc = accounts.getSavingAcc();
+        }
+
+        if (accounts.getSalaryAcc() != null) {
+            str += "1 - Salary Account\n";
+            salAcc = accounts.getSalaryAcc();
+        }
+
+        if (accounts.getFdAcc() != null) {
+            str += "1 - Fixed Deposit Account\n";
+            fdAcc = accounts.getFdAcc();
+        }
+
+        str += "press 0 to go back to previous menu";
+
+        int userChoice = -1;
+        do {
+            print(str);
+            userChoice = getInt();
+
+            switch (userChoice) {
+                case 0: // go back to previous menu
+                    break;
+
+                case 1: // saving account
+                    if (savAcc != null) {
+                        processUtilityPayment(utilityType, "Saving account", savAcc);
+                    }
+
+                case 2: // salary account
+                    if (salAcc != null) {
+                        processUtilityPayment(utilityType, "Salary account", salAcc);
+                    }
+
+                case 3: // FD account
+                    if (fdAcc != null) {
+                        processUtilityPayment(utilityType, "Fixed Deposit account",fdAcc);
+                    }
+
+                default:
+                    print("Invalid input. please try again");
+                    userChoice = -1;
+            }
+
+        } while(userChoice == -1);
+
+    }
+
+    public void processUtilityPayment(UtilityBills utilityType, String accName, BankAccount acc) {
+        print("Available balance in your " + accName + " is " + acc.getAccountBalance() + ". Enter the amount of bill you'd like to pay:");
+
+        boolean again = false;
+        do {
+            double billAmount = getDouble();
+            if (billAmount < acc.getAccountBalance()) {
+                print("You have successfully paid your " + (utilityType.equals(UtilityBills.electricityBill) ? "Electricity Bill" : "Credit Card Bill"));
+                print("new balance in your " + accName + " is " + acc.deductBalance(billAmount));
+
+                again = false;
+            }
+            else {
+                print("You only have " + acc.getAccountBalance() + " amount in your bank, please enter less amount than that:");
+                again = true;
+            }
+
+        } while(again);
     }
 
     // endregion
