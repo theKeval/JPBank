@@ -1,6 +1,7 @@
 package com.thekeval.util;
 
 import com.google.gson.Gson;
+import com.thekeval.Models.CustomerDetails;
 import com.thekeval.Models.DataModel;
 import static com.thekeval.util.Constants.*;
 
@@ -39,6 +40,13 @@ public class FileUtils {
             print("error in saving data:");
             ex.printStackTrace();
         }
+    }
+
+    public void updateData() {
+        customers.replaceCustomer(loggedInCustomer);
+
+        String jsonStr = getJsonString(customers);
+        saveData(jsonStr);
     }
 
     public DataModel getData() {

@@ -234,8 +234,152 @@ public class Helpers {
             print(transactionMenu);
             userChoice = getInt();
 
+            switch (userChoice) {
+                case 0: // exit
+                    loggedInCustomer = null;
+                    print("Logout successful");
+                    break;
+
+                case 1: // display current balance
+                    displayBalance(loggedInCustomer.getAccounts());
+                    userChoice = -1;     // set -1 to again show the transaction menu
+                    break;
+
+                case 2: // deposit money
+                    break;
+
+                case 3: // withdraw money
+                    print("Please enter the amount to withdraw: ");
+                    double amount = getDouble();
+                    drawMoney(loggedInCustomer.getAccounts(), amount);
+
+                    FileUtils.getInstance().updateData();
+                    userChoice = -1;
+                    break;
+
+                case 4: // transfer money to other bank account
+                    break;
+
+                case 5: // pay electricity bills
+                    break;
+
+                case 6: // pay credit card bills
+                    break;
+
+                case 7: // add new bank account
+                    break;
+
+                case 8: // show or change customer details
+                    break;
+
+                default:
+                    print("Incorrect input. Please enter valid action number");
+                    userChoice = -1;
+                    break;
+            }
+
         } while (userChoice == -1);
     }
+
+    private void displayBalance(CustomerAccounts accounts) {
+        if (accounts != null) {
+
+            if (accounts.getSavingAcc() != null) {
+                print("Balance in Saving account is: " + String.format("%.2f", accounts.getSavingAcc().getAccountBalance()));
+            }
+
+            if (accounts.getSalaryAcc() != null) {
+                print("Balance in Salary account is: " + String.format("%.2f", accounts.getSalaryAcc().getAccountBalance()));
+            }
+
+            if (accounts.getFdAcc() != null) {
+                print("Balance in Fixed Deposit account is: " + String.format("%.2f", accounts.getFdAcc().getAccountBalance()));
+            }
+
+        }
+    }
+
+    private void drawMoney(CustomerAccounts accounts, double money) {
+        if (accounts == null)
+            return;
+
+        SavingAccount savAcc = null;
+        SalaryAccount salAcc = null;
+        FixedDepositAccount fdAcc = null;
+
+        String str = "From which account would you like to draw money?\n";
+        if (accounts.getSavingAcc() != null) {
+            str += "1 - Savings Account\n";
+            savAcc = accounts.getSavingAcc();
+        }
+
+        if (accounts.getSalaryAcc() != null) {
+            str += "2 - Salary Account\n";
+            salAcc = accounts.getSalaryAcc();
+        }
+
+        if (accounts.getFdAcc() != null) {
+            str += "3 - Fixed Deposit Account\n";
+            fdAcc = accounts.getFdAcc();
+        }
+
+        str += "press 0 to go back to previous menu";
+
+        int userChoice = -1;
+        do {
+            print(str);
+            userChoice = getInt();
+
+            switch (userChoice) {
+                case 0: // go back to previous menu
+                    break;
+
+                case 1: // saving account
+                    if (savAcc != null) {
+                        if (savAcc.getAccountBalance() > money) {
+                            print("You withdraw " + money + " amount");
+                            print("New balance in savings account is " + savAcc.deductBalance(money));
+                        }
+                        else {
+                            print("no sufficient balance");
+                        }
+                    }
+                    break;
+
+                case 2: // salary account
+                    if (salAcc != null) {
+                        if (salAcc.getAccountBalance() > money) {
+                            print("You withdraw " + money + " amount");
+                            print("New balance in savings account is " + salAcc.deductBalance(money));
+                        }
+                        else {
+                            print("no sufficient balance");
+                        }
+                    }
+                    break;
+
+                case 3: // fixed deposit account
+                    if (fdAcc != null) {
+                        if (fdAcc.getAccountBalance() > money) {
+                            print("You withdraw " + money + " amount");
+                            print("New balance in savings account is " + fdAcc.deductBalance(money));
+                        }
+                        else {
+                            print("no sufficient balance");
+                        }
+                    }
+                    break;
+
+                default:
+                    print("Invalid input. Please try again");
+                    userChoice = -1;
+                    break;
+            }
+
+        } while (userChoice == -1);
+
+    }
+
 
     // endregion
 

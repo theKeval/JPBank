@@ -9,6 +9,15 @@ public class DataModel {
         this.customers = customers;
     }
 
+    public void replaceCustomer(CustomerDetails customer) {
+        for (int i = 0; i<customers.size(); i++) {
+            if (customer.getName().equalsIgnoreCase(customers.get(i).getName())) {
+                customers.set(i, customer);
+                break;
+            }
+        }
+    }
+
     // region getters & setters
     public ArrayList<CustomerDetails> getCustomers() {
         return customers;
