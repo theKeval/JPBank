@@ -1,7 +1,6 @@
 package com.thekeval.util;
 
 import com.thekeval.Models.*;
-import static com.thekeval.util.FileUtils.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -12,9 +11,14 @@ public class Helpers {
     public Scanner scan = new Scanner(System.in).useDelimiter("\n");
 
     public Helpers() {
-        if (objHelpers == null) {
+        // Initialize
+    }
+
+    public static Helpers getInstance() {
+        if (objHelpers == null)
             objHelpers = new Helpers();
-        }
+
+        return objHelpers;
     }
 
     public void print(String str) {
@@ -138,7 +142,7 @@ public class Helpers {
     public String generateAccountNumber() {
         int accNo = 0;
         int lastAccNo = Constants.LAST_ACC_NO;
-        DataModel savedData = objFileUtils.getData();
+        DataModel savedData = FileUtils.getInstance().getData();
         if (savedData == null) {
             accNo = Integer.parseInt(String.format("%03d", 1));
         }

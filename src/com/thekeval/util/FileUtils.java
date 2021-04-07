@@ -9,10 +9,15 @@ import java.io.*;
 public class FileUtils {
 
     public static FileUtils objFileUtils = null;
-    public FileUtils() {
-        if (objFileUtils == null) {
+    public static FileUtils getInstance() {
+        if (objFileUtils == null)
             objFileUtils = new FileUtils();
-        }
+
+        return objFileUtils;
+    }
+
+    public FileUtils() {
+        // initialize
     }
 
     public String getJsonString(DataModel data) {
@@ -50,7 +55,7 @@ public class FileUtils {
             print(data.toString());
 
         } catch (FileNotFoundException fileNotFoundEx) {
-            print("File not found");
+            // print("File not found");
         }
         catch (Exception ex) {
             print("error reading data from file.");

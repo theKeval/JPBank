@@ -2,6 +2,7 @@ package com.thekeval;
 
 import com.thekeval.Models.CustomerDetails;
 import com.thekeval.Models.DataModel;
+import com.thekeval.util.Constants;
 import com.thekeval.util.FileUtils;
 import com.thekeval.util.Helpers;
 
@@ -9,22 +10,23 @@ import java.util.ArrayList;
 
 import static com.thekeval.util.FileUtils.*;
 import static com.thekeval.util.Helpers.*;
+import static com.thekeval.util.Constants.*;
 
 public class Main {
 
 
     public static void main(String[] args) {
 
-        DataModel data = objFileUtils.getData();
+        DataModel data = FileUtils.getInstance().getData();
 
         if (data == null) {
             // first time program run - no saved data
             print("\nWelcome to Swift Bank. Please register yourself to get started");
-            var users = objHelpers.registerMultipleUsers();
+            ArrayList<CustomerDetails> users = Helpers.getInstance().registerMultipleUsers();
 
             DataModel _data = new DataModel(users);
-            String dataJson = objFileUtils.getJsonString(_data);
-            objFileUtils.saveData(dataJson);
+            String dataJson = FileUtils.getInstance().getJsonString(_data);
+            FileUtils.getInstance().saveData(dataJson);
         } else {
             // use saved data from 'data' variable
         }
@@ -34,7 +36,7 @@ public class Main {
         int userChoice = -1;
         do {
             print("1 - Register new user\n2 - Login existing user\n9 - Show saved data\n0 - Exit\nNote: To perform transactions, you need to login");
-            userChoice = objHelpers.getInt();
+            userChoice = Helpers.getInstance().getInt();
 
             switch (userChoice) {
                 case 0:
@@ -43,24 +45,21 @@ public class Main {
 
                 case 1:
 
-                    ArrayList<CustomerDetails> users = objHelpers.registerMultipleUsers();
+                    ArrayList<CustomerDetails> users = Helpers.getInstance().registerMultipleUsers();
 
                     // loop in all registered users to add them in our global 'customers' object
                     for (CustomerDetails user : users) {
-                        customers ?.customers.append(user);
+                        customers.getCustomers().add(user);
                     }
 
-                // if customers obj is not null, get the json string
-                var jsonStr = ""
-                if let data = customers {
-                    jsonStr = getJsonString(of:data)
-                }
+                    // if customers obj is not null, get the json string
+                    var jsonStr = FileUtils.getInstance().getJsonString(customers);
 
-                // save json to file
-                saveJsonFile(of:jsonStr)
+                    // save json to file
+                    FileUtils.getInstance().saveData(jsonStr);
 
-                // reset user choice to show main menu again
-                userChoice = -1
+                    // reset user choice to show main menu again
+                    userChoice = -1;
 
                 break;
 
